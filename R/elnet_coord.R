@@ -1,15 +1,30 @@
 #' elnet coord
 #'
-#' @param x
-#' @param y
-#' @param lambda
-#' @param alpha
-#' @param iter
+#'@description Use coordinate descent on elastic net
+#' @param x design matrix
+#' @param y target vector
+#' @param lambda penalty weight
+#' @param alpha distribution of penalty
+#' @param iter number of iterations
 #'
 #' @return
 #' @export
 #'
-#' @examples elnet_coord(x,y,0.1,0.5,20)
+#' @examples
+#' library(MASS)
+#' n=50
+#' p=10
+#' beta = c(2,0,-2,0,1,0,-1,0,0,0)
+#' sigma = diag(1,p,p)
+#' sigma[1,2]=0.8
+#' sigma[2,1]=0.8
+#' sigma[5,6]=0.8
+#' sigma[6,5]=0.8
+
+#' x = mvrnorm(n, mu=rep(0,p),Sigma=sigma)
+#' y = x%*%beta + rnorm(n,0,1)
+
+#' elnet_coord(x,y, 4, 0.5, 20)
 elnet_coord = function(x,y,lambda, alpha, iter){
   n = length(y)
   p = dim(x)[2]

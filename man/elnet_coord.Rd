@@ -7,11 +7,30 @@
 elnet_coord(x, y, lambda, alpha, iter)
 }
 \arguments{
-\item{iter}{}
+\item{x}{design matrix}
+
+\item{y}{target vector}
+
+\item{lambda}{penalty weight}
+
+\item{alpha}{distribution of penalty}
+
+\item{iter}{number of iterations}
 }
 \description{
-elnet coord
+Use coordinate descent on elastic net
 }
 \examples{
-elnet_coord(x,y,0.1,0.5,20)
+library(MASS)
+n=50
+p=10
+beta = c(2,0,-2,0,1,0,-1,0,0,0)
+sigma = diag(1,p,p)
+sigma[1,2]=0.8
+sigma[2,1]=0.8
+sigma[5,6]=0.8
+sigma[6,5]=0.8
+x = mvrnorm(n, mu=rep(0,p),Sigma=sigma)
+y = x\%*\%beta + rnorm(n,0,1)
+elnet_coord(x,y, 4, 0.5, 20)
 }

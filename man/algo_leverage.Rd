@@ -7,11 +7,19 @@
 algo_leverage(A, b, n_samples)
 }
 \arguments{
-\item{n_samples}{}
+\item{A}{Design matrix}
+
+\item{b}{Target vector}
+
+\item{n_samples}{Number of samples to use for leverage sampling.}
 }
 \description{
-algo_leverage
+Use leverage sampling to solve least square problem.  Returns the intercept and slope
 }
 \examples{
-algo_leverage(A,b,100)
+A = rt(100,6)
+e = rnorm(100, 0,1)
+b = -A+e
+res = algo_leverage(A,b,100)
+print(res)
 }

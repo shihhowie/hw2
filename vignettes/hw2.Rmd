@@ -1,0 +1,96 @@
+---
+title: "hw2"
+author: "Howard Shih"
+date: "May 20, 2019"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{hw2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## STSCI 6520 hw2
+
+This package contains 3 functions: solve_ols, algo_leverage, and elnet_coord
+
+It can be install by 
+
+```{r install_devtool, results="hide", message=False}
+library(devtools)
+install_github("shihhowie/hw2")
+```
+
+and load by
+
+```{r load, message=False}
+library(hw2)
+```
+
+## solve_ols
+
+solve_ols solves ordinary least square by iterative methods including Jacobi and Gauss_Seidal(GS).  
+
+The Jacobi method allows parallel processing.  Users can specify how many processes he or she wants to parallelize with the parameter n_cores.  This number cannot exceed the number of processors the CPU has.  
+
+$A$, $b$ are the design matrix and target vector respectively.  These are used to solve for x in the least square equation
+
+$$b=Ax$$
+
+The method returns a list of 3 elements.  The first is the solution of the OLS, the second is the error at each iteration, and the third is the time for each iteration.
+Here is a demo for the method
+
+```{r example}
+A = diag(2, 10, 10)
+b = 1:10
+
+Jacobi_res = solve_ols(A,b,method="Jacobi",n_cores=2)
+GS_res = solve_ols(A,b,method="GS")
+print(Jacobi_res[1])
+print(GS_res[1])
+```
+
+## algo_leverage
+
+The algo_leverage function uses leverage sampling to approximate the OLS solution.  Instead of using all the data, solving the OLS with a subset of the data can improve computation speed.  The leverage score of the design matrix A can be interpreted as sampling importance.
+
+Here is a demo for the method
+
+```{r example}
+A = rt(100,6)
+e = rnorm(100, 0,1)
+b = -A+e
+res = algo_leverage(A,b,100)
+print(res)
+```
+
+## elnet_coord
+
+The elnet_coord is the coordinate descent implementation of elastic net.
+Elastic net balances the eidge regression penalty and the lasso repression penalty penalty. The weight of the lasso penalty is dependent on $\alpha$, with $\alpha=1$ correspond to fully ridge regression and $\alpha=0$ correspond to fully lasso.
+
+Here is a demo for the method
+
+```{r example}
+library(MASS)
+n=50
+p=10
+beta = c(2,0,-2,0,1,0,-1,0,0,0)
+sigma = diag(1,p,p)
+sigma[1,2]=0.8
+sigma[2,1]=0.8
+sigma[5,6]=0.8
+sigma[6,5]=0.8
+
+x = mvrnorm(n, mu=rep(0,p),Sigma=sigma)
+y = x%*%beta + rnorm(n,0,1)
+
+elnet_coord(x,y, 4, 0.5, 20)
+```
+

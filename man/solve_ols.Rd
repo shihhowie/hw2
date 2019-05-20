@@ -4,14 +4,30 @@
 \alias{solve_ols}
 \title{Solve OLS}
 \usage{
-solve_ols(A, b, iter)
+solve_ols(A, b, method = "Jacobi", n_cores = 1, iter = 10)
 }
 \arguments{
-\item{iter}{}
+\item{A}{design matrix}
+
+\item{b}{target vector}
+
+\item{method}{Jacobi(Jacobi), or Gauss-Seidal(GS)}
+
+\item{n_cores}{Number of parallel processes}
+
+\item{iter}{number of iteration for the iterative method}
+}
+\value{
+list(x, run_time)
 }
 \description{
-Solve OLS
+Solve ordinary least square using iterative methods
 }
 \examples{
-solve_ols(A,b,20)
+A = diag(2, 10, 10)
+b = 1:10
+Jacobi_res = solve_ols(A,b,method="Jacobi",n_cores=2)
+GS_res = solve_ols(A,b,method="GS")
+print(Jacobi_res[1])
+print(GS_res[1])
 }
